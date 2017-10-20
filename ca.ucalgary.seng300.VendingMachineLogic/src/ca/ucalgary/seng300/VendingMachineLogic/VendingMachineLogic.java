@@ -6,9 +6,18 @@ import org.lsmr.vending.hardware.*;
 public class VendingMachineLogic implements CoinSlotListener, DeliveryChuteListener, PopCanRackListener, SelectionButtonListener {
 
 	private VendingMachine vm;
-	private int userCredit = 0;
+	private int userCredit;
 	
 	public VendingMachineLogic() {
+		
+		int[] coinValues = {5, 10, 25, 100, 200}; //Nickels, dimes, quarters, loonies, toonies (all values in cents)
+		int buttonCount = 6; //6 kinds of pop
+		int coinRackCapacity = 200;
+		int popRackCapacity = 10;
+		int receptacleCapacity = 200;
+		
+		vm = new VendingMachine(coinValues, buttonCount, coinRackCapacity, popRackCapacity, receptacleCapacity);
+		userCredit = 0;
 		
 	}
 	
