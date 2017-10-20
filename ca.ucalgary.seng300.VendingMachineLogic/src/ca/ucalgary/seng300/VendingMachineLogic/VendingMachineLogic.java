@@ -5,6 +5,13 @@ import org.lsmr.vending.hardware.*;
 
 public class VendingMachineLogic implements CoinSlotListener, DeliveryChuteListener, PopCanRackListener, SelectionButtonListener {
 
+	private VendingMachine vm;
+	private int userCredit = 0;
+	
+	public VendingMachineLogic() {
+		
+	}
+	
 	@Override
 	public void enabled(AbstractHardware<? extends AbstractHardwareListener> hardware) {
 		// TODO Auto-generated method stub
