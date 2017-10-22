@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import ca.ucalgary.seng300.VendingMachineLogic.*;
 import org.lsmr.vending.Coin;
+import org.lsmr.vending.hardware.DisabledException;
 import org.lsmr.vending.hardware.VendingMachine;
 
 public class Test1 {
@@ -28,7 +29,7 @@ public class Test1 {
 		new VendingMachineLogic(vm);
 		
 		List<String> popNames = new ArrayList<String>(); //List of pop names
-		
+				
 		popNames.add("Water");
 		popNames.add("Pepsi");
 		popNames.add("Sprite");
@@ -43,11 +44,11 @@ public class Test1 {
 		}
 		
 		vm.configure(popNames, costs);
-		
+		vm.loadPopCans(5, 5, 5, 5, 5, 5); //Starts with 5 of each kind of pop
 	}
 
 	@Test
-	public void test() {
+	public void buyPopTest() throws DisabledException {
 		
 		Coin nickel = new Coin(5);
 		Coin dime = new Coin(10);
@@ -55,8 +56,14 @@ public class Test1 {
 		Coin loonie = new Coin(100);
 		Coin toonie = new Coin(200);
 		
-		// TODO ZACH implement the rest, it should be very similar to your tests from individual assignment 2. Remember to use ASSERTS
+		vm.getCoinSlot().addCoin(loonie);
+		vm.getCoinSlot().addCoin(toonie);
+		vm.getCoinSlot().addCoin(toonie);
 		
+		vm.getSelectionButton(0).press(); //I want water
+		vm.getSelectionButton(1).press(); //Now I want Pepsi but not enough moneyz
+		
+		//TODO AsserEquals leftover change
 	}
 
 }
