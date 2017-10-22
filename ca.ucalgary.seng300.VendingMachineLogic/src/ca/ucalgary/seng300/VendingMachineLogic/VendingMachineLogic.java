@@ -1,3 +1,11 @@
+/****************************************************
+ * Authors: Xin Yan (Jack) Xie
+ * 			Xiangyu (Michael) Han
+ * 			Zachary Metz
+ * 	This class handles all the logic operations that occur in a vending machine,
+ * specifically, this class handles the calling of methods when money is inserted
+ * and buttons are pressed as well as the listening of their respective events
+ */
 package ca.ucalgary.seng300.VendingMachineLogic;
 
 import java.util.ArrayList;
@@ -13,35 +21,43 @@ public class VendingMachineLogic implements CoinSlotListener, PopCanRackListener
 	private List<SelectionButton> buttonList = new ArrayList<>();
 	private String event;
 	
-	
+	/********************
+	 * Constructor
+	 * instantiates and initializes all the relevant hardware
+	 * and registers listeners
+	 *******************/
 	public VendingMachineLogic(VendingMachine vm) {
 		
 		this.vm = vm;
 		userCredit = 0;
-		
-		for (int i = 0; i < vm.getNumberOfSelectionButtons(); i++) { 
-			//For loop to iterate through all the available buttons
-			SelectionButton sb = vm.getSelectionButton(i); //Stores it
+		//For loop to iterate through all the available buttons
+		for (int i = 0; i < vm.getNumberOfSelectionButtons(); i++) {
+			SelectionButton sb = vm.getSelectionButton(i); //Instantiates the hardware
 			sb.register(this); //And registers the relevant listeners
-			buttonList.add(sb); //into an ArrayList for later use
+			buttonList.add(sb); //Stores into an ArrayList for later use
 		}
-		
-		for (int i = 0; i < vm.getNumberOfPopCanTacks(); i++) {
-			PopCanRack pcr = vm.getPopCanRack(i); 
+		//Iterate through all available pop can racks
+		for (int i = 0; i < vm.getNumberOfPopCanRacks(); i++) {
+			PopCanRack pcr = vm.getPopCanRack(i); //Instantiates the hardware
 			pcr.register(this); //Registers the relevant listeners
 		}
 		
-		for (int i = 0; i < vm.get; i++) {
-			PopCanRack pcr = vm.getPopCanRack(i); 
-			pcr.register(this);
-		}
-		
 		vm.getCoinSlot().register(this);
-		
-		
+				
 	}
 	
-	
+	// my methods to try and do the assigment
+	public void insterCoin(Coin coin){
+		try{
+			this.vm.getCoinSlot().addCoin(coin);
+		}catch( DisabledException e ){
+			System.out.println("something went wrong");
+		}
+		
+	}
+	public int getUserCredit(){
+		return userCredit;
+	}
 	/**
 	 * @return the current event
 	 */
@@ -58,7 +74,10 @@ public class VendingMachineLogic implements CoinSlotListener, PopCanRackListener
 	public void disabled(AbstractHardware<? extends AbstractHardwareListener> hardware) {
 		//Leave Empty		
 	}
-
+	
+	/*************************
+	 * Handles the logic of selection buttons
+	 *************************/
 	@Override
 	public void pressed(SelectionButton button) {
 		
@@ -70,7 +89,7 @@ public class VendingMachineLogic implements CoinSlotListener, PopCanRackListener
 		
 		int cost = vm.getPopKindCost(btnIndex);
 		
-		if (cost < userCredit) { //Not enough money!!!
+		if (cost > userCredit) { //Not enough money!!!
 			//Nothing happens for now
 		} else {
 			PopCanRack pr = vm.getPopCanRack(btnIndex); //Matches the button with the pop rack
@@ -94,25 +113,28 @@ public class VendingMachineLogic implements CoinSlotListener, PopCanRackListener
 		event = "Removed a " + popCan.getName();
 	}
 
+	@Override // leave empty
+	public void popCansLoaded(PopCanRack rack, PopCan... popCans) {}
 
-	@Override
-	public void popCansLoaded(PopCanRack rack, PopCan... popCans) {
-		event = "Loaded " + popCans.length + " cans of" + popCans[0].getName();
-	}
+	@Override // leave empty
+	public void popCansUnloaded(PopCanRack rack, PopCan... popCans) {}
+	
+	@Override // leave empty
+	public void popCansFull(PopCanRack popCanRack) {}
 
-	@Override
-	public void popCansUnloaded(PopCanRack rack, PopCan... popCans) {
-		event = "Unloaded " + popCans.length + " cans of" + popCans[0].getName();
-	}
+	@Override // leave empty
+	public void popCansEmpty(PopCanRack popCanRack) {}
+	
 	@Override
 	public void validCoinInserted(CoinSlot slot, Coin coin) {
-		userCredit += coin.getValue();
-		event = "Inserted $"+coin.getValue();
+		userCredit += coin.getValue(); //Increment the credit when valid coins are inserted
+		event = "Inserted $" + coin.getValue();
 	}
 
 	@Override
 	public void coinRejected(CoinSlot slot, Coin coin) {
 		event = "Invalid coin inserted";
 	}
+
 	
 }
