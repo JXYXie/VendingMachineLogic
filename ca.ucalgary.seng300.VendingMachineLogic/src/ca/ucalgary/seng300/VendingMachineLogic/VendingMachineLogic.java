@@ -46,7 +46,18 @@ public class VendingMachineLogic implements CoinSlotListener, PopCanRackListener
 				
 	}
 	
-	
+	// my methods to try and do the assigment
+	public void insterCoin(Coin coin){
+		try{
+			this.vm.getCoinSlot().addCoin(coin);
+		}catch( DisabledException e ){
+			System.out.println("something went wrong");
+		}
+		
+	}
+	public int getUserCredit(){
+		return userCredit;
+	}
 	/**
 	 * @return the current event
 	 */
@@ -102,25 +113,17 @@ public class VendingMachineLogic implements CoinSlotListener, PopCanRackListener
 		event = "Removed a " + popCan.getName();
 	}
 
-	@Override
-	public void popCansLoaded(PopCanRack rack, PopCan... popCans) {
-		//Leave empty
-	}
+	@Override // leave empty
+	public void popCansLoaded(PopCanRack rack, PopCan... popCans) {}
 
-	@Override
-	public void popCansUnloaded(PopCanRack rack, PopCan... popCans) {
-		//Leave empty
-	}
+	@Override // leave empty
+	public void popCansUnloaded(PopCanRack rack, PopCan... popCans) {}
 	
-	@Override
-	public void popCansFull(PopCanRack popCanRack) {
-		//Leave empty		
-	}
+	@Override // leave empty
+	public void popCansFull(PopCanRack popCanRack) {}
 
-	@Override
-	public void popCansEmpty(PopCanRack popCanRack) {
-		//Leave empty
-	}
+	@Override // leave empty
+	public void popCansEmpty(PopCanRack popCanRack) {}
 	
 	@Override
 	public void validCoinInserted(CoinSlot slot, Coin coin) {
