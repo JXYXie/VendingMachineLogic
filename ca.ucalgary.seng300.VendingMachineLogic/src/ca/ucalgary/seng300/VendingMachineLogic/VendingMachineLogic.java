@@ -1,114 +1,103 @@
 package ca.ucalgary.seng300.VendingMachineLogic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lsmr.vending.*;
 import org.lsmr.vending.hardware.*;
 
-public class VendingMachineLogic implements CoinSlotListener, DeliveryChuteListener, PopCanRackListener, SelectionButtonListener {
+public class VendingMachineLogic implements CoinSlotListener, PopCanRackListener, SelectionButtonListener {
 
 	private VendingMachine vm;
 	private int userCredit;
+	private List<SelectionButton> buttonList = new ArrayList<>();
 	
-	public VendingMachineLogic() {
+	public VendingMachineLogic(VendingMachine vm) {
 		
-		int[] coinValues = {5, 10, 25, 100, 200}; //Nickels, dimes, quarters, loonies, toonies (all values in cents)
-		int buttonCount = 6; //6 kinds of pop
-		int coinRackCapacity = 200;
-		int popRackCapacity = 10;
-		int receptacleCapacity = 200;
-		
-		vm = new VendingMachine(coinValues, buttonCount, coinRackCapacity, popRackCapacity, receptacleCapacity);
+		this.vm = vm;
 		userCredit = 0;
+		
+		for (int i = 0; i < vm.getNumberOfSelectionButtons(); i++) { //For loop to iterate through all the available buttons
+			SelectionButton sb = vm.getSelectionButton(i); //Stores it
+			sb.register(this); //And registers the relevant listeners
+			buttonList.add(sb); //into an ArrayList for later use
+		}
 		
 	}
 	
 	@Override
 	public void enabled(AbstractHardware<? extends AbstractHardwareListener> hardware) {
-		// TODO Auto-generated method stub
-		
+		//Leave Empty
 	}
 
 	@Override
 	public void disabled(AbstractHardware<? extends AbstractHardwareListener> hardware) {
-		// TODO Auto-generated method stub
-		
+		//Leave Empty		
 	}
 
 	@Override
 	public void pressed(SelectionButton button) {
-		// TODO Auto-generated method stub
 		
+		int btnIndex = buttonList.indexOf(button) ; //Which button did the user press
+		
+		if (btnIndex == -1) { //Unregistered button is pressed
+			//Nothing happens for now
+		}
+		
+		int cost = vm.getPopKindCost(btnIndex);
+		
+		if (cost < userCredit) { //Not enough money!!!
+			//Nothing happens for now
+		} else {
+			PopCanRack pr = vm.getPopCanRack(btnIndex); //Matches the button with the pop rack
+			try {
+				pr.dispensePopCan(); //Dispenses the relevant pop
+				vm.getCoinReceptacle().storeCoins(); //Stores the change
+				userCredit -= cost; //Deduct the pay from the available credit
+			} catch (DisabledException | EmptyException | CapacityExceededException e) {
+				throw new SimulationException(e);
+			}
+		}
 	}
 
 	@Override
 	public void popCanAdded(PopCanRack popCanRack, PopCan popCan) {
-		// TODO Auto-generated method stub
-		
+		//Leave Empty
 	}
 
 	@Override
 	public void popCanRemoved(PopCanRack popCanRack, PopCan popCan) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void popCansFull(PopCanRack popCanRack) {
-		// TODO Auto-generated method stub
-		
+		//Leave Empty
 	}
 
 	@Override
 	public void popCansEmpty(PopCanRack popCanRack) {
-		// TODO Auto-generated method stub
-		
+		//Leave Empty
 	}
 
 	@Override
 	public void popCansLoaded(PopCanRack rack, PopCan... popCans) {
-		// TODO Auto-generated method stub
-		
+		//Leave Empty
 	}
 
 	@Override
 	public void popCansUnloaded(PopCanRack rack, PopCan... popCans) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void itemDelivered(DeliveryChute chute) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void doorOpened(DeliveryChute chute) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void doorClosed(DeliveryChute chute) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void chuteFull(DeliveryChute chute) {
-		// TODO Auto-generated method stub
-		
+		//Leave Empty
 	}
 
 	@Override
 	public void validCoinInserted(CoinSlot slot, Coin coin) {
-		// TODO Auto-generated method stub
-		
+		userCredit += coin.getValue();
 	}
 
 	@Override
 	public void coinRejected(CoinSlot slot, Coin coin) {
-		// TODO Auto-generated method stub
-		
+		//Leave Empty
 	}
 	
 }
