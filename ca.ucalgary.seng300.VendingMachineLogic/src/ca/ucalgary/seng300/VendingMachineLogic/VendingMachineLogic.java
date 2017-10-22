@@ -11,18 +11,42 @@ public class VendingMachineLogic implements CoinSlotListener, PopCanRackListener
 	private VendingMachine vm;
 	private int userCredit;
 	private List<SelectionButton> buttonList = new ArrayList<>();
+	private String event;
+	
 	
 	public VendingMachineLogic(VendingMachine vm) {
 		
 		this.vm = vm;
 		userCredit = 0;
 		
-		for (int i = 0; i < vm.getNumberOfSelectionButtons(); i++) { //For loop to iterate through all the available buttons
+		for (int i = 0; i < vm.getNumberOfSelectionButtons(); i++) { 
+			//For loop to iterate through all the available buttons
 			SelectionButton sb = vm.getSelectionButton(i); //Stores it
 			sb.register(this); //And registers the relevant listeners
 			buttonList.add(sb); //into an ArrayList for later use
 		}
 		
+		for (int i = 0; i < vm.getNumberOfPopCanTacks(); i++) {
+			PopCanRack pcr = vm.getPopCanRack(i); 
+			pcr.register(this); //Registers the relevant listeners
+		}
+		
+		for (int i = 0; i < vm.get; i++) {
+			PopCanRack pcr = vm.getPopCanRack(i); 
+			pcr.register(this);
+		}
+		
+		vm.getCoinSlot().register(this);
+		
+		
+	}
+	
+	
+	/**
+	 * @return the current event
+	 */
+	public String getEvent() {
+		return event;
 	}
 	
 	@Override
@@ -62,42 +86,33 @@ public class VendingMachineLogic implements CoinSlotListener, PopCanRackListener
 
 	@Override
 	public void popCanAdded(PopCanRack popCanRack, PopCan popCan) {
-		//Leave Empty
+		event = "Added a " + popCan.getName();
 	}
 
 	@Override
 	public void popCanRemoved(PopCanRack popCanRack, PopCan popCan) {
-		// TODO Auto-generated method stub
+		event = "Removed a " + popCan.getName();
 	}
 
-	@Override
-	public void popCansFull(PopCanRack popCanRack) {
-		//Leave Empty
-	}
-
-	@Override
-	public void popCansEmpty(PopCanRack popCanRack) {
-		//Leave Empty
-	}
 
 	@Override
 	public void popCansLoaded(PopCanRack rack, PopCan... popCans) {
-		//Leave Empty
+		event = "Loaded " + popCans.length + " cans of" + popCans[0].getName();
 	}
 
 	@Override
 	public void popCansUnloaded(PopCanRack rack, PopCan... popCans) {
-		//Leave Empty
+		event = "Unloaded " + popCans.length + " cans of" + popCans[0].getName();
 	}
-
 	@Override
 	public void validCoinInserted(CoinSlot slot, Coin coin) {
 		userCredit += coin.getValue();
+		event = "Inserted $"+coin.getValue();
 	}
 
 	@Override
 	public void coinRejected(CoinSlot slot, Coin coin) {
-		//Leave Empty
+		event = "Invalid coin inserted";
 	}
 	
 }
