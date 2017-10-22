@@ -10,16 +10,15 @@ import org.junit.Test;
 
 import ca.ucalgary.seng300.VendingMachineLogic.*;
 import org.lsmr.vending.Coin;
+import org.lsmr.vending.PopCan;
 import org.lsmr.vending.hardware.SimulationException;
 import org.lsmr.vending.hardware.VendingMachine;
 
 public class Test1 {
 	
-	/* this is the class for the test machine */
-	class testMachine{
-		
-	}
-
+	private String[] pops = {
+			"Water", "Pepsi", "Sprite","Mountain Dew", "Orange Crush", "Gatorade"
+			};
 	private VendingMachine vm;
 	private VendingMachineLogic vml;
 	@Before
@@ -35,23 +34,16 @@ public class Test1 {
 		vml = new VendingMachineLogic(vm);
 
 		List<String> popNames = new ArrayList<String>(); //List of pop names
-
-		popNames.add("Water");
-		popNames.add("Pepsi");
-		popNames.add("Sprite");
-		popNames.add("Mountain Dew");
-		popNames.add("Orange Crush");
-		popNames.add("Gatorade");
+		for(String pop : pops){
+			popNames.add(pop); // convert the array to an array list
+		}
 
 		List<Integer> costs = new ArrayList<Integer>(); //List of pop costs
-
 		for (int i = 0; i < popNames.size(); i++ ) {
 			costs.add(250); //everything costs 2.50
 		}
 
 		vm.configure(popNames, costs);
-		
-		
 
 	}
 
@@ -68,15 +60,9 @@ public class Test1 {
 				
 		
 
-		// TODO ZACH implement the rest, it should be very similar to your tests from individual assignment 2. Remember to use ASSERTS
-		
-	}
+		// TODO ZACH implement the rest, it should be very similar to your tests f
 	@Test
-	public void allCoinsCountedCorrectly() throws Exception {
-		//add all the coins into the vm and make sure the value is incirmented correctly
-	}
-	@Test
-	public void validCoin(){
+	public void validCoins(){
 		Coin nickel = new Coin(5);
 		vml.insterCoin(nickel);
 		assertEquals(vml.getEvent(),"Inserted $"+nickel.getValue());
@@ -111,7 +97,8 @@ public class Test1 {
 	
 	@Test
 	public void addSodas(){
-		
+		PopCan pepsi = new PopCan("Pepsi");
+		vm.getPopCanRack(1).load(pepsi,pepsi,pepsi,pepsi); //load 4 pepsi into the rack 
 	}
 	@Test
 	public void DispenseSodas(){
