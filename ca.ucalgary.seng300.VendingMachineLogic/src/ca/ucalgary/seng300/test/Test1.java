@@ -6,7 +6,7 @@
  * Zachary Metz
  * This class tests the functionality of the VendingMachineLogic class
  * by simulating different possible user interactions
- * An overall 85.1% code coverage is reached
+ * An overall 89.9% code coverage is reached
  ****************************************************/
 package ca.ucalgary.seng300.test;
 
