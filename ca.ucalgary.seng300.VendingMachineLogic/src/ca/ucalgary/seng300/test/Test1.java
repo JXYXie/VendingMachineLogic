@@ -1,3 +1,13 @@
+/****************************************************
+ * SENG 300 Group Assignment 1
+ * Authors: 
+ * Xin Yan (Jack) Xie
+ * Xiangyu (Michael) Han
+ * Zachary Metz
+ * This class tests the functionality of the VendingMachineLogic class
+ * by simulating different possible user interactions
+ * An overall 85.1% code coverage is reached
+ ****************************************************/
 package ca.ucalgary.seng300.test;
 import static org.junit.Assert.*;
 
@@ -10,7 +20,7 @@ import org.junit.Test;
 
 import ca.ucalgary.seng300.VendingMachineLogic.*;
 import org.lsmr.vending.Coin;
-import org.lsmr.vending.hardware.SimulationException;
+import org.lsmr.vending.hardware.DisabledException;
 import org.lsmr.vending.hardware.VendingMachine;
 
 public class Test1 {
@@ -26,14 +36,14 @@ public class Test1 {
 	public void setUp() throws Exception {
 
 		int[] coinValues = {5, 10, 25, 100, 200}; //Nickels, dimes, quarters, loonies, toonies (all values in cents)
-		int btnCount = 6; //Testing with 6 different kinds of pop
+		int btnCount = 6; //6 types of pop
 		int coinRackCapacity = 15;
 		int popRackCapacity = 10;
 		int receptacleCapacity = 200;
 
 		vm = new VendingMachine(coinValues, btnCount, coinRackCapacity, popRackCapacity, receptacleCapacity);
 		vml = new VendingMachineLogic(vm);
-
+		
 		List<String> popNames = new ArrayList<String>(); //List of pop names
 
 		popNames.add("Water");
@@ -50,72 +60,37 @@ public class Test1 {
 		}
 
 		vm.configure(popNames, costs);
-		
-		
 
-	}
-
-	@Test
-	public void test() throws Exception  {
-		//make all coins and add them to a coin array
-				Coin nickel = new Coin(5);
-				Coin dime = new Coin(10);
-				Coin quarter = new Coin(25);
-				Coin loonie = new Coin(100);
-				Coin toonie = new Coin(200);
-				
-				Coin[] coins = {nickel,dime,quarter,loonie,toonie};
-				
-		
-
-		// TODO ZACH implement the rest, it should be very similar to your tests from individual assignment 2. Remember to use ASSERTS
-		
-	}
-	@Test
-	public void allCoinsCountedCorrectly() throws Exception {
-		//add all the coins into the vm and make sure the value is incirmented correctly
-	}
-	@Test
-	public void validCoin(){
-		Coin nickel = new Coin(5);
-		vml.insterCoin(nickel);
-		assertEquals(vml.getEvent(),"Inserted $"+nickel.getValue());
-		assertEquals(vml.getUserCredit(),nickel.getValue());
-	}
-	@Test
-	public void invalidCoin(){
-		Coin doublePenny = new Coin(2);
-		vml.insterCoin(doublePenny);
-		assertEquals(vml.getUserCredit(),0); //show that it has not been counted
-		assertEquals(vml.getEvent(),"Invalid coin inserted");
-	}
-	@Test(expected = SimulationException.class)
-	public void coinOverFlow() {
-		Coin nickel = new Coin(5);
-		for(int i = 0; i< 1000;i++){
-			System.out.println(i);
-			vml.insterCoin(nickel);
-		}
-		
-	}
-	@Test 
-	public void canRacksEmpty(){
-		assertEquals(0,vm.getPopCanRack(0).size());
-		assertEquals(0,vm.getPopCanRack(1).size());
-		assertEquals(0,vm.getPopCanRack(2).size());
-		assertEquals(0,vm.getPopCanRack(3).size());
-		assertEquals(0,vm.getPopCanRack(4).size());
-		assertEquals(0,vm.getPopCanRack(5).size());
-		
-	}
-	
-	@Test
-	public void addSodas(){
-		
-	}
-	@Test
-	public void DispenseSodas(){
-		
+		vm.loadPopCans(5, 5, 5, 5, 5, 5); //Starts with 5 of each kind of pop
 	}
 
+	@Test
+	public void buyPopTest() throws DisabledException {
+		
+		Coin loonie = new Coin(100);
+		Coin toonie = new Coin(200);
+		
+		vm.getCoinSlot().addCoin(loonie); //100
+		assertEquals("Inserted $100", vml.getEvent()); //Tests coin insertion event
+		vm.getCoinSlot().addCoin(toonie); //100 + 200 = 
+		assertEquals(300, vml.getCredit()); //300 cents
+		
+		vm.getSelectionButton(0).press(); //I want water
+		assertEquals("Removed a Water", vml.getEvent()); //Tests pop removal event
+		
+		assertEquals(50, vml.getCredit()); //300 - cost of water (250) = 50 cents
+	}
+
+	@Test
+	public void maliciousTest() throws DisabledException {
+		
+		Coin washer = new Coin(1); //Invalid coin
+		
+		vm.getCoinSlot().addCoin(washer);
+		assertEquals("Invalid coin inserted", vml.getEvent());
+		
+		vm.getSelectionButton(2).press(); //I want Sprite for free
+		
+		assertEquals(0, vml.getCredit()); //No credit
+	}	
 }
