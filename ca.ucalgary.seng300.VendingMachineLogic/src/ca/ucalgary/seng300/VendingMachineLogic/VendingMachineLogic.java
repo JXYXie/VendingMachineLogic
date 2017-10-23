@@ -95,8 +95,10 @@ public class VendingMachineLogic implements CoinSlotListener, PopCanRackListener
 				pr.dispensePopCan(); //Dispenses the relevant pop
 				vm.getCoinReceptacle().storeCoins(); //Stores the change
 				userCredit -= cost; //Deduct the pay from the available credit
-			} catch (DisabledException | EmptyException | CapacityExceededException e) {
+			} catch (DisabledException | CapacityExceededException e) {
 				throw new SimulationException(e);
+			} catch (EmptyException e2) {
+				event = "Pop is sold out!"; //Set the event for sold-out
 			}
 		}
 	}

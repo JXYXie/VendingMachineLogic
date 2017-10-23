@@ -21,6 +21,7 @@ import org.junit.Test;
 import ca.ucalgary.seng300.VendingMachineLogic.*;
 import org.lsmr.vending.Coin;
 import org.lsmr.vending.hardware.DisabledException;
+import org.lsmr.vending.hardware.SimulationException;
 import org.lsmr.vending.hardware.VendingMachine;
 
 public class Test1 {
@@ -73,6 +74,34 @@ public class Test1 {
 		assertEquals("Removed a Water", vml.getEvent()); //Tests pop removal event
 		
 		assertEquals(50, vml.getCredit()); //300 - cost of water (250) = 50 cents
+	}
+	
+	@Test
+	public void soldOutTest() throws DisabledException, SimulationException {
+		Coin loonie = new Coin(100);
+		Coin toonie = new Coin(200);
+		
+		vm.getCoinSlot().addCoin(toonie); //200*7 = 1400
+		vm.getCoinSlot().addCoin(toonie);
+		vm.getCoinSlot().addCoin(toonie);
+		vm.getCoinSlot().addCoin(toonie);
+		vm.getCoinSlot().addCoin(toonie);
+		vm.getCoinSlot().addCoin(toonie);
+		vm.getCoinSlot().addCoin(toonie);
+		vm.getCoinSlot().addCoin(loonie); // 1400 + 100 = 1500
+		assertEquals(1500, vml.getCredit()); //1500 cents
+		
+		vm.getSelectionButton(0).press(); //I want water
+		vm.getSelectionButton(0).press(); //I want water
+		vm.getSelectionButton(0).press(); //I want water
+		vm.getSelectionButton(0).press(); //I want water
+		vm.getSelectionButton(0).press(); //I want water
+		assertEquals("Removed a Water", vml.getEvent()); //Tests pop removal event
+		assertEquals(250, vml.getCredit()); //1500 - 250*5 = 250
+		vm.getSelectionButton(0).press(); //Since the popRack has only 5 bottles,
+		assertEquals("Pop is sold out!", vml.getEvent()); //the pop is already sold out
+		
+		assertEquals(250, vml.getCredit()); //Since the pop is sold out, no charge will occur
 	}
 
 	@Test
