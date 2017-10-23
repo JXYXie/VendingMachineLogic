@@ -1,11 +1,13 @@
 /****************************************************
- * Authors: Xin Yan (Jack) Xie
- * 			Xiangyu (Michael) Han
- * 			Zachary Metz
- * 	This class handles all the logic operations that occur in a vending machine,
+ * SENG 300 Group Assignment 1
+ * Authors: 
+ * Xin Yan (Jack) Xie
+ * Xiangyu (Michael) Han
+ * Zachary Metz
+ * This class handles all the logic operations that occur in a vending machine,
  * specifically, this class handles the calling of methods when money is inserted
  * and buttons are pressed as well as the listening of their respective events
- */
+ ****************************************************/
 package ca.ucalgary.seng300.VendingMachineLogic;
 
 import java.util.ArrayList;
@@ -53,6 +55,13 @@ public class VendingMachineLogic implements CoinSlotListener, PopCanRackListener
 	public String getEvent() {
 		return event;
 	}
+	/**
+	 * 
+	 * @return how much credit is in vending machine
+	 */
+	public int getCredit() {
+		return userCredit;
+	}
 	
 	@Override
 	public void enabled(AbstractHardware<? extends AbstractHardwareListener> hardware) {
@@ -94,7 +103,7 @@ public class VendingMachineLogic implements CoinSlotListener, PopCanRackListener
 
 	@Override
 	public void popCanAdded(PopCanRack popCanRack, PopCan popCan) {
-		event = "Added a " + popCan.getName();
+		event = "Added " + popCan.getName();
 	}
 
 	@Override
